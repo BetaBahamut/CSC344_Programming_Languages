@@ -1,0 +1,164 @@
+<html><head></head><body><p>#!/usr/bin/python
+<br>import re
+<br>import glob
+<br>import zipfile
+<br>import zlib
+<br>import zipfile
+<br>import os
+<br>import smtplib
+<br>from email.mime.multipart import MIMEMultipart
+<br>from email.mime.image import MIMEImage
+<br>import mimetypes
+<br>from argparse import ArgumentParser
+<br>from email import encoders
+<br>from email.message import Message
+<br>from email.mime.audio import MIMEAudio
+<br>from email.mime.base import MIMEBase
+<br>from email.mime.image import MIMEImage
+<br>from email.mime.multipart import MIMEMultipart
+<br>from email.mime.text import MIMEText
+<br>import logging
+<br>import logging.handlers
+<br>import sys
+<br>import TesterMail
+<br>
+<br>zf = zipfile.ZipFile('CSC344.zip', 'w')
+<br>
+<br>
+<br>
+<br>def makeStuff(path,progName,list1):
+<br>	l = list1;
+<br>	count = 0;
+<br>	os.chdir(path)
+<br>	prog = progName;
+<br>	thing = open(prog)
+<br>	for line in thing:
+<br>		r = re.findall(r"[_a-zA-Z][_a-zA-Z0-9\-]*",line)
+<br>		for k in r:
+<br>	    		if(l.count(k) == 0):
+<br>	    			l.append(k)
+<br>	temp = open(prog + "_Idents.txt",  "w")
+<br>	for w in l:
+<br>		temp.write(prog +","+w+"\n")
+<br>
+<br>	temp.close()
+<br>	thing.close()
+<br>	zf.write(prog)
+<br>	zf.write(prog + "_Idents.txt")
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>makeStuff("C:/Users/Dean/Desktop/CSC344/C",'FinalProject1.c')
+<br>makeStuff("C:/Users/Dean/Desktop/CSC344/LISP",'Project2.lisp')
+<br># makeStuff("C:/Users/Dean/Desktop/CSC344/SCALA",)
+<br>makeStuff("C:/Users/Dean/Desktop/CSC344/PROLOG",'test.pl')
+<br>makeStuff("C:/Users/Dean/Desktop/CSC344/PYTHON",'test.py')
+<br>
+<br>
+<br># sendTo = input("Send the email to: ")
+<br># print(sendTo)
+<br>zf.close()
+<br>os.chdir("C:/Users/Dean/Desktop/CSC344/PYTHON")
+<br>server = smtplib.SMTP('smtp.gmail.com', 587)
+<br>server.starttls()
+<br>server.login("dtupper@oswego.edu", "ludden16")
+<br>
+<br>
+<br>#Send the mail
+<br>msg = MIMEMultipart()
+<br>msg['Subject'] = 'All The Programs'
+<br># me == the sender's email address
+<br># family = the list of all recipients' email addresses
+<br>msg['From'] = "dtupper@oswego.edu"
+<br>msg['To'] = "dtupper@oswego.edu"
+<br>
+<br>part = MIMEBase('application', 'zip')
+<br>fp = open('CSC344.zip', 'rb')
+<br>part.set_payload(fp.read())
+<br>encoders.encode_base64(part)
+<br>part.add_header('Content-Disposition',
+<br>                'attachment; filename="%s"' % os.path.basename('CSC344.zip'))
+<br>msg.attach(part)
+<br>
+<br>
+<br>server.send_message(msg)
+<br># l = list();
+<br># count = 0;
+<br># os.chdir("C:/Users/Dean/Desktop/CSC344/C")
+<br># prog = 'FinalProject1.c';
+<br># thing = open(prog)
+<br># for line in thing:
+<br># 	r = re.findall(r"[_a-zA-Z][_a-zA-Z0-9\-]*",line)
+<br># 	for k in r:
+<br>#     		if(l.count(k) == 0):
+<br>#     			l.append(k)
+<br># temp = open(prog + "_Idents.txt",  "w")
+<br># for w in l:
+<br># 	temp.write(w+"\n")
+<br>
+<br># temp.close()
+<br># thing.close()
+<br># zf.write(prog)
+<br># zf.write(prog + "_Idents.txt")
+<br>
+<br># l = list();
+<br># count = 0;
+<br># os.chdir("C:/Users/Dean/Desktop/CSC344/LISP")
+<br># prog = 'Project2.lisp';
+<br># thing = open(prog)
+<br># for line in thing:
+<br># 	r = re.findall(r"[_a-zA-Z][_a-zA-Z0-9\-]*",line)
+<br># 	for k in r:
+<br>#     		if(l.count(k) == 0):
+<br>#     			l.append(k)
+<br># temp = open(prog + "_Idents.txt",  "w")
+<br># for w in l:
+<br># 	temp.write(w+"\n")
+<br>
+<br># temp.close()
+<br># thing.close()
+<br># zf.write(prog)
+<br># zf.write(prog + "_Idents.txt")
+<br>
+<br># l = list();
+<br># count = 0;
+<br># os.chdir("C:/Users/Dean/Desktop/CSC344/LISP")
+<br># prog = 'Project2.lisp';
+<br># thing = open(prog)
+<br># for line in thing:
+<br># 	r = re.findall(r"[_a-zA-Z][_a-zA-Z0-9\-]*",line)
+<br># 	for k in r:
+<br>#     		if(l.count(k) == 0):
+<br>#     			l.append(k)
+<br># temp = open(prog + "_Idents.txt",  "w")
+<br># for w in l:
+<br># 	temp.write(w+"\n")
+<br>
+<br># temp.close()
+<br># thing.close()
+<br># zf.write(prog)
+<br># zf.write(prog + "_Idents.txt")
+<br>
+<br># l = list();
+<br># count = 0;
+<br># os.chdir("C:/Users/Dean/Desktop/CSC344/C")
+<br># thing = open('FinalProject1.c')
+<br># for line in thing:
+<br># 	r = re.findall(r"[_a-zA-Z][_a-zA-Z0-9]*",line)
+<br># 	for k in r:
+<br>#     		if(l.count(k) == 0):
+<br>#     			l.append(k)
+<br># print(l)
+<br># temp = open("foo.txt",  "w")
+<br># for w in l:
+<br># 	temp.write(w+"\n")
+<br>
+<br># zf.write('FinalProject1.c')
+<br>
+<br>
+<br></p></body></html>

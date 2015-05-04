@@ -1,0 +1,17 @@
+<html><head></head><body><p>import webbrowser
+<br>import os
+<br>
+<br>f = open('helloworld.html','w')
+<br>
+<br>message = """<html>
+<br><head></head>
+<br><body><p>Hello World!</p></body>
+<br><a href="diff.html">here</a>
+<br></html>"""
+<br>
+<br>f.write(message)
+<br>f.close()
+<br>
+<br>filename = 'helloworld.html'
+<br># webbrowser.get('chrome')
+<br>webbrowser.open_new_tab(filename)<br></p></body></html>

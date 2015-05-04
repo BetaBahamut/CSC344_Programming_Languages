@@ -1,0 +1,145 @@
+<html><head></head><body><p>import re
+<br>import glob
+<br>import zipfile
+<br>import zlib
+<br>import zipfile
+<br>import os
+<br>import smtplib
+<br>from email.mime.multipart import MIMEMultipart
+<br>from email.mime.image import MIMEImage
+<br>import mimetypes
+<br>from argparse import ArgumentParser
+<br>from email import encoders
+<br>from email.message import Message
+<br>from email.mime.audio import MIMEAudio
+<br>from email.mime.base import MIMEBase
+<br>from email.mime.image import MIMEImage
+<br>from email.mime.multipart import MIMEMultipart
+<br>from email.mime.text import MIMEText
+<br>import logging
+<br>import logging.handlers
+<br>import sys
+<br># from html import HTML
+<br>
+<br>
+<br>
+<br>os.chdir("..")
+<br>zf = zipfile.ZipFile('CSC344.zip', 'w')
+<br>overall = open("CSC344.html",  "w")
+<br>overallBody =""
+<br>path = os.getcwd()
+<br># dirs = os.listdir( path )
+<br># dirs = filter(os.path.isdir, os.listdir( path ) )
+<br>extensions = set([".c",".pl",".lisp",".scala",".py"])
+<br>dirs = next(os.walk(path))[1]
+<br>
+<br># print(file_list)
+<br>
+<br># This would print all the files and directories
+<br>for file in dirs:
+<br>    os.chdir(path +"\\"+file)
+<br>    internal = open(file +".html",  "w")
+<br>    internalBody =""
+<br>    # print(path)
+<br>    # print(file)
+<br>    
+<br>    l = list()
+<br>    tempL = list()
+<br>    
+<br>    # a = re.compile('.*/.*\.\(c\|cpp\|h\|pl\|py\|scala\|lisp\)$')
+<br>    # print(a.match("stuff.c"))
+<br>    for prog in os.listdir(os.getcwd()):
+<br>        count = 0
+<br>        thing = open(prog)
+<br>        if prog.endswith(tuple(extensions)):
+<br>            webP = open(prog + ".html",  "w")
+<br>            # webP.write("<html><head></head><body><p>")
+<br>            whole = ""
+<br>            for line in thing:
+<br>                whole = whole + line + "<br>"
+<br>                count = count + 1
+<br>                # print(line)
+<br>
+<br>                # print(line)
+<br>                # webP.write(line +"\n")
+<br>                # webP.write('\n')
+<br>                if prog.endswith(".lisp"):
+<br>                    # print(prog)
+<br>                    if not(line.startswith(";")):
+<br>                        r = re.findall(r"[^ \t\n\r\f\v\"\(\)\\\'\;]*",line)
+<br>                    # r = re.findall(r"[_a-zA-Z\S][_a-zA-Z0-9\-\S]*",line)
+<br>                else:
+<br>                    r = re.findall(r"[_a-zA-Z][_a-zA-Z0-9]*",line)
+<br>                for k in r:
+<br>                    if(tempL.count(k) == 0):
+<br>                        l.append(prog+ " : "+k)
+<br>                        tempL.append(k)
+<br>                    # if(l.count(k) == 0):
+<br>                    #     l.append(k)
+<br>            webP.write("<html><head></head><body><p>")
+<br>            webP.write(whole)
+<br>            webP.write("</p></body></html>")
+<br>            webP.close()
+<br>            
+<br>
+<br>
+<br>            # print(whole)
+<br>            zf.write(prog)
+<br>            zf.write(prog + ".html")
+<br>            internalBody = internalBody +"<p>lines: "+str(count) +"<a href=" +prog+".html"+">"+prog+"</a>"+"<br>"
+<br>            temp = open(file + "_Idents.txt",  "w")
+<br>            # print(prog)
+<br>            for w in l:
+<br>                temp.write(w+"\n")
+<br>            temp.close()
+<br>    thing.close()
+<br>    # zf.write(prog)
+<br>    os.chdir(path +"\\"+file)
+<br>    zf.write(file + "_Idents.txt")
+<br>    internal.write("<html><head></head><body><p>")
+<br>    internal.write(internalBody)
+<br>    internal.write("</p></body></html>")
+<br>    internal.close()
+<br>    zf.write(file +".html")
+<br>    overallBody = overallBody + "<a href="+file+".html"+">"+file+"</a>"+"<br>"
+<br>os.chdir(path)
+<br>
+<br>overall.write("<html><head></head><body><p>")
+<br>overall.write(overallBody)
+<br>overall.write("</p></body></html>")
+<br>overall.close()
+<br>zf.write("CSC344.html")
+<br>
+<br>zf.close()
+<br># print(path)
+<br>os.chdir(path)
+<br>
+<br>person = input('Enter the Address: ')
+<br>server = smtplib.SMTP('smtp.gmail.com', 587)
+<br>server.starttls()
+<br>server.login("dtupper@oswego.edu", "ludden16")
+<br>
+<br>
+<br>#Send the mail
+<br>msg = MIMEMultipart()
+<br>msg['Subject'] = 'All The Programs'
+<br># me == the sender's email address
+<br># family = the list of all recipients' email addresses
+<br>msg['From'] = "dtupper@oswego.edu"
+<br>msg['To'] = person
+<br>
+<br>part = MIMEBase('application', 'zip')
+<br>fp = open('CSC344.zip', 'rb')
+<br>part.set_payload(fp.read())
+<br>encoders.encode_base64(part)
+<br>part.add_header('Content-Disposition',
+<br>                'attachment; filename="%s"' % os.path.basename('CSC344.zip'))
+<br>msg.attach(part)
+<br>
+<br>
+<br>server.send_message(msg)
+<br>
+<br># os.chdir("..")
+<br># print(os.getcwd())
+<br># print(glob.glob('[_a-zA-Z]*'))
+<br># l = glob.glob('*.*')<br></p></body></html>
